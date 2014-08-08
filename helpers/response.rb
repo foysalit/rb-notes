@@ -20,13 +20,13 @@ module App
 
 		def withData data, message=nil, code = 200
 			@res.status = code
-			data = {:error => false, :data => data}
+			ret = {:error => false, :data => data}
 
 			if message != nil
-				data[:message] = message
+				ret[:message] = message
 			end
 
-			data.to_json
+			ret.to_json
 		end
 
 		def noDataFound message = "Sorry the data cannot be found!"

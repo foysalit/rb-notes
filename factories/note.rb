@@ -1,15 +1,30 @@
 require 'digest/md5'
 
 require_relative '../models/note'
+require_relative '../models/picture'
 
 module App::Factories
 	class Note
 		def initialize
 			@model = App::Models::Note
+			@pictureModel = App::Models::Picture
 		end
 
 		def getAll
-			return @model.all
+	 		notes = @model.all
+	 		pictures = @pictureModel.all
+
+	 		notes.each do |note|
+	 			note[:pictures] = Array.new
+
+	 			pictures.each do |pic|
+	 				if pic.note_id == note.id
+	 					note[:pictures] << pic
+	 				end
+	 			end
+	 		end
+
+	 		return notes 
 		end
 
 		def getOne id
@@ -23,6 +38,19 @@ module App::Factories
 		def createOne data
 			note = @model.new(title: data[:title], note: data[:note])
 			note.save
+
+			if data[:pictures]
+				data[:pictures].each do |i, picData|
+					createPicture note, picData
+				end
+			end
+
+			note
+		end
+
+		def createPicture note, pictureData
+			picture = @pictureModel.new(data_uri: pictureData, note_id: note.id)
+			picture.save
 		end
 
 		def removeOne id
