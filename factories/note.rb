@@ -11,7 +11,11 @@ module App::Factories
 		end
 
 		def getAll
-	 		notes = @model.all
+	 		@model.all
+		end
+
+		def getAllWithPictures
+			notes = @model.all
 	 		pictures = @pictureModel.all
 
 	 		notes.each do |note|
@@ -24,12 +28,14 @@ module App::Factories
 	 			end
 	 		end
 
-	 		return notes 
+	 		return notes
 		end
 
 		def getOne id
 			if id
-				return @model.find(:id => id)
+				note = @model.find(:id => id)
+				note[:pictures] = note.pictures
+				return note
 			else
 				return nil
 			end
