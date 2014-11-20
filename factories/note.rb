@@ -56,7 +56,7 @@ module App::Factories
 
 		def getMatched queryString
 			query = "%#{queryString}%".strip
-			note = @model.where("title LIKE :query AND note LIKE :query", :query => query, :query => query)
+			note = @model.where("title LIKE :query OR note LIKE :query", :query => query, :query => query)
 			return note
 		end
 
