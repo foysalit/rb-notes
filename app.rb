@@ -14,6 +14,14 @@ get '/notes' do
 	@res.dataFound @factory.getAll
 end
 
+get '/notes/search' do
+	if(!params.empty? && params.has_key?("q"))
+		@res.dataFound @factory.getMatched params[:q]
+	else
+		@res.noDataFound "You have to pass a search query!"
+	end
+end
+
 options '/notes/:id' do |id|
 	@factory.removeOne id
 	@res.dataDeleted

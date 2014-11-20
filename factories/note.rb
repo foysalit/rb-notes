@@ -54,12 +54,19 @@ module App::Factories
 			note
 		end
 
+		def getMatched queryString
+			query = "%#{queryString}%".strip
+			note = @model.where("title LIKE :query AND note LIKE :query", :query => query, :query => query)
+			return note
+		end
+
 		def createPicture note, pictureData
 			picture = @pictureModel.new(data_uri: pictureData, note_id: note.id)
 			picture.save
 		end
 
 		def removeOne id
+			@pictureModel.where(:note_id => id).destroy
 			@model.where(:id => id).destroy
 		end
 
