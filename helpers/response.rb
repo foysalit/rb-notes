@@ -33,6 +33,10 @@ module App
 			withData 404, message
 		end
 
+		def unauthorized message = "Sorry you don't have access!"
+			withError 401, message
+		end
+
 		def actionError message = "Sorry we couldn't executed your requested action"
 			withError 500, message
 		end
