@@ -11,18 +11,9 @@ module App::Factories
 		end
 
 		def getAll
-	 		notes = @model.all
-	 		pictures = @pictureModel.all
-
-	 		notes.each do |note|
-	 			note[:pictures] = Array.new
-
-	 			pictures.each do |pic|
-	 				if pic.note_id == note.id
-	 					note[:pictures] << pic
-	 				end
-	 			end
-	 		end
+	 		notes = @model.eager(:pictures).all.map do |a|
+				a.values.merge(:pictures=>a.pictures.map{|al| al.values})
+			end
 
 	 		return notes 
 		end

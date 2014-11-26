@@ -1,12 +1,19 @@
 require 'rubygems'
 require 'sequel'
 require 'logger'
+require 'fileutils'
 
 Sequel::Model.plugin(:schema)
 DB = Sequel.sqlite('database.db')
 
 # Logger
-log_file_path = "#{__FILE__}_#{Time.now.strftime("%Y%m%d")}.txt"
+log_path = "./logs"
+dirname = File.dirname(log_path)
+unless File.directory?(dirname)
+  FileUtils.mkdir_p(dirname)
+end
+
+log_file_path = "#{log_path}/#{__FILE__}_#{Time.now.strftime("%Y%m%d")}.txt"
 log_file = File.open(log_file_path, "a")
 DB.loggers << Logger.new(log_file)
 
