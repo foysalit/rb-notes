@@ -39,3 +39,11 @@ if DB.table_exists? (:pictures)
 		rename_column :data, :data_uri
 	end
 end
+
+unless DB.table_exists? (:users)
+	DB.create_table(:users) do
+		primary_key :id
+		string 		:username, :unique => true
+		string		:password
+	end
+end

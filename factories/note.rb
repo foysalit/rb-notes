@@ -15,12 +15,31 @@ module App::Factories
 				a.values.merge(:pictures=>a.pictures.map{|al| al.values})
 			end
 
-	 		return notes 
+	 		@model.all
+		end
+
+		def getAllWithPictures
+			notes = @model.all
+	 		pictures = @pictureModel.all
+
+	 		notes.each do |note|
+	 			note[:pictures] = Array.new
+
+	 			pictures.each do |pic|
+	 				if pic.note_id == note.id
+	 					note[:pictures] << pic
+	 				end
+	 			end
+	 		end
+
+	 		return notes
 		end
 
 		def getOne id
 			if id
-				return @model.find(:id => id)
+				note = @model.find(:id => id)
+				note[:pictures] = note.pictures
+				return note
 			else
 				return nil
 			end
@@ -39,12 +58,19 @@ module App::Factories
 			note
 		end
 
+		def getMatched queryString
+			query = "%#{queryString}%".strip
+			note = @model.where("title LIKE :query OR note LIKE :query", :query => query, :query => query)
+			return note
+		end
+
 		def createPicture note, pictureData
 			picture = @pictureModel.new(data_uri: pictureData, note_id: note.id)
 			picture.save
 		end
 
 		def removeOne id
+			@pictureModel.where(:note_id => id).destroy
 			@model.where(:id => id).destroy
 		end
 
